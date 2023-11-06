@@ -1,15 +1,29 @@
-import React, { Component, useEffect } from 'react'
+import React, { Component } from 'react'
+import PropTypes from "prop-types"
 import NewsItems from './NewsItems'
 import Spinner from './Spinner'
 
 export class News extends Component {
- constructor({ pageSize }) {
+ static defaultProps = {
+  pageSize: 9,
+  country: "in",
+  category: "general",
+ }
+
+ static propTypes = {
+  pageSize: PropTypes.number,
+  country: PropTypes.string,
+  category: PropTypes.string,
+ }
+
+ constructor() { // (1) just to indicate that receiving props in state is possible || (2) constructor(props) with super(props) is also possible - then you can use this.props inside the constructor
   super();
   this.state = {
    articles: [],
    loading: false,
    page: 1,
-   pageSize: pageSize,
+   // pageSize: pageSize, (1)
+   // pageSize: pageSize, (2)
    totalPages: null,
   }
  }
@@ -21,7 +35,7 @@ export class News extends Component {
  // MY FUNCTIONS
 
  async fetchArticles(pg) {
-  let url = `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=b1b2cd43f3fd4a2a83db63b8d14d70bb&page=${pg}&pageSize=${this.state.pageSize}`;
+  let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=b1b2cd43f3fd4a2a83db63b8d14d70bb&page=${pg}&pageSize=${this.props.pageSize}`; // (1) this.state.pageSize also possible
   this.setState({ loading: true });
   let data = await fetch(url);
   let json = await data.json();
