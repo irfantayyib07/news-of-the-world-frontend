@@ -6,6 +6,8 @@ import Alert from './Alert'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
 export class News extends Component {
+ json = null;
+
  static defaultProps = {
   pageSize: 9,
   country: "us",
@@ -39,14 +41,16 @@ export class News extends Component {
   let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apiKey}&page=${this.state.page++}&pageSize=${this.props.pageSize}`;
   // console.log(url);
   let data = await fetch(url);
-  let json = await data.json();
+  this.json = await data.json();
 
   this.setState({
-   articles: json.status!=="error" ? this.state.articles.concat(json.articles) : [],
-   loading: json.status==="error" && false,
-   totalResults: json.totalResults,
+   articles: this.json.status!=="error" ? this.state.articles.concat(this.json.articles) : [],
+   loading: this.json.status==="error" && false,
+   totalResults: this.json.totalResults,
    totalPages: Math.ceil(this.state.totalResults / this.state.pageSize),
   });
+  
+  // console.log(this.json);
  };
 
  // RENDER
@@ -56,7 +60,7 @@ export class News extends Component {
   return (
    <>
     <h4>Top Headlines</h4>
-    <InfiniteScroll dataLength={this.state.articles?.length} next={this.fetchMoreData} hasMore={this.state.articles?.length !== this.state.totalResults} loader={this.state.loading ? <Spinner /> : <Alert />}>
+    <InfiniteScroll dataLength={this.state.articles?.length} next={this.fetchMoreData} hasMore={this.state.articles?.length !== this.state.totalResults} loader={this.state.loading ? <Spinner /> : <Alert message={this.json.message}/>}>
      <div className="container">
       <div className="row">
        {this.state.articles.length !== 0 && this.state.articles.map((value) => {
