@@ -32,7 +32,7 @@ export class News extends Component {
  }
 
  async componentDidMount() {
-  this.fetchMoreData();
+  // this.fetchMoreData();
  }
 
  // MY FUNCTIONS
