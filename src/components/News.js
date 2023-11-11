@@ -1,81 +1,65 @@
-import React, { Component } from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from "prop-types"
 import NewsItems from './NewsItems'
 import Spinner from './Spinner'
 import Alert from './Alert'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
-export class News extends Component {
- json = null;
+export function News(props) {
+ const [articles, setArticles] = useState([]);
+ const [loading, setLoading] = useState(true);
+ const [page, setPage] = useState(1);
+ const [totalPages, setTotalPages] = useState(null);
+ const [totalResults, setTotalResults] = useState(null);
+ const [data, setData] = useState(null);
 
- static defaultProps = {
-  pageSize: 9,
-  country: "us",
-  category: "general",
- }
+ useEffect(() => {
+  fetchMoreData();
+ }, [])
 
- static propTypes = {
-  pageSize: PropTypes.number,
-  country: PropTypes.string,
-  category: PropTypes.string,
- }
+ const fetchMoreData = async () => {
+  setLoading(true)
 
- constructor() {
-  super();
-  this.state = {
-   articles: [],
-   loading: true,
-   page: 1,
-   totalPages: null,
-   totalResults: null,
-  }
- }
+  let url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
+  let res = await fetch(url);
+  let data = await res.json();
+  setData(data);
 
- async componentDidMount() {
-  // this.fetchMoreData();
- }
-
- // MY FUNCTIONS
-
- fetchMoreData = async () => {
-  this.setState({ loading: true, })
-  let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apiKey}&page=${this.state.page++}&pageSize=${this.props.pageSize}`;
-  // console.log(url);
-  let data = await fetch(url);
-  this.json = await data.json();
-
-  this.setState({
-   articles: this.json.status!=="error" ? this.state.articles.concat(this.json.articles) : [],
-   loading: this.json.status==="error" && false,
-   totalResults: this.json.totalResults,
-   totalPages: Math.ceil(this.state.totalResults / this.state.pageSize),
-  });
-  
-  // console.log(this.json);
+  setArticles(data.status !== "error" ? articles.concat(data.articles) : []);
+  setLoading(data.status === "error" && false);
+  setPage(page + 1);
+  setTotalResults(data.totalResults);
+  setTotalPages(Math.ceil(totalResults / props.pageSize));
  };
 
- // RENDER
-
- render() {
-  // console.log(this.state.loading)
-  return (
-   <>
-    <h4>Top Headlines</h4>
-    <InfiniteScroll dataLength={this.state.articles?.length} next={this.fetchMoreData} hasMore={this.state.articles?.length !== this.state.totalResults} loader={this.state.loading ? <Spinner /> : <Alert message={this.json.message}/>}>
-     <div className="container">
-      <div className="row">
-       {this.state.articles.length !== 0 && this.state.articles.map((value) => {
-        // console.log(this.state.articles, value)
-        return <div className="col-md-4 my-3" key={value.url}>
-         <NewsItems title={value.title?.slice(0, 45)} description={value.description?.slice(0, 88)} imgUrl={value.urlToImage} newsUrl={value.url} />
-        </div>
-       })}
-      </div>
+ return (
+  <>
+   <h4>Top Headlines</h4>
+   <InfiniteScroll dataLength={articles?.length} next={fetchMoreData} hasMore={articles?.length !== totalResults} loader={loading ? <Spinner /> : <Alert message={data?.message} />}>
+    <div className="container">
+     <div className="row">
+      {articles.length !== 0 && articles.map((value) => {
+       return <div className="col-md-4 my-3" key={value.url}>
+        <NewsItems title={value.title?.slice(0, 45)} description={value.description?.slice(0, 88)} imgUrl={value.urlToImage} newsUrl={value.url} />
+       </div>
+      })}
      </div>
-    </InfiniteScroll>
-   </>
-  )
- }
+    </div>
+   </InfiniteScroll>
+  </>
+ )
+}
+
+News.defaultProps = {
+ pageSize: 9,
+ country: "us",
+ category: "general",
+}
+
+News.propTypes = {
+ pageSize: PropTypes.number,
+ country: PropTypes.string,
+ category: PropTypes.string,
 }
 
 export default News
