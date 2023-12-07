@@ -21,6 +21,7 @@ export function News(props) {
   setLoading(true)
 
   let url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
+  console.log(url);
   let res = await fetch(url);
   let data = await res.json();
   setData(data);
