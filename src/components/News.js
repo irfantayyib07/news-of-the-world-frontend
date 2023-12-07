@@ -45,12 +45,12 @@ export class News extends Component {
   this.json = await data.json();
 
   this.setState({
-   articles: this.json.status!=="error" ? this.state.articles.concat(this.json.articles) : [],
-   loading: this.json.status==="error" && false,
+   articles: this.json.status !== "error" ? this.state.articles.concat(this.json.articles) : [],
+   loading: this.json.status === "error" && false,
    totalResults: this.json.totalResults,
    totalPages: Math.ceil(this.state.totalResults / this.state.pageSize),
   });
-  
+
   // console.log(this.json);
  };
 
@@ -61,7 +61,7 @@ export class News extends Component {
   return (
    <>
     <h4>Top Headlines</h4>
-    <InfiniteScroll dataLength={this.state.articles?.length} next={this.fetchMoreData} hasMore={this.state.articles?.length !== this.state.totalResults} loader={this.state.loading ? <Spinner /> : <Alert message={this.json.message}/>}>
+    <InfiniteScroll dataLength={this.state.articles?.length} next={this.fetchMoreData} hasMore={this.state.articles?.length !== this.state.totalResults} loader={this.state.loading ? <Spinner /> : <Alert message={this.json.message} />}>
      <div className="container">
       <div className="row">
        {this.state.articles.length !== 0 && this.state.articles.map((value) => {
