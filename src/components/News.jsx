@@ -4,6 +4,18 @@ import NewsItems from './NewsItems'
 import Spinner from './Spinner'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
+News.defaultProps = {
+ pageSize: 9,
+ country: "us",
+ category: "general",
+}
+
+News.propTypes = {
+ pageSize: PropTypes.number,
+ country: PropTypes.string,
+ category: PropTypes.string,
+}
+
 function News(props) {
  const [articles, setArticles] = useState([]);
  const [loading, setLoading] = useState(true);
@@ -63,18 +75,6 @@ function News(props) {
    </InfiniteScroll>
   </div>
  )
-}
-
-News.defaultProps = {
- pageSize: 9,
- country: "us",
- category: "general",
-}
-
-News.propTypes = {
- pageSize: PropTypes.number,
- country: PropTypes.string,
- category: PropTypes.string,
 }
 
 export default News
