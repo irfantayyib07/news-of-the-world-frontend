@@ -1,6 +1,6 @@
-import loading from "./loading.gif"
+import loading from "../assets/loading.gif";
 
-export function Spinner() {
+function Spinner() {
  return (
   <div className='text-center'>
    <img src={loading} alt="loading..." />

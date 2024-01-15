@@ -2,52 +2,66 @@ import React, { useEffect, useState } from 'react'
 import PropTypes from "prop-types"
 import NewsItems from './NewsItems'
 import Spinner from './Spinner'
-import Alert from './Alert'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
-export function News(props) {
+function News(props) {
  const [articles, setArticles] = useState([]);
  const [loading, setLoading] = useState(true);
  const [page, setPage] = useState(1);
- const [totalPages, setTotalPages] = useState(null);
  const [totalResults, setTotalResults] = useState(null);
- const [data, setData] = useState(null);
+
+ console.log(page);
+
+ const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
+ console.log(url);
 
  useEffect(() => {
-  fetchMoreData();
- }, [])
+  const controller = new AbortController();
 
- const fetchMoreData = async () => {
-  setLoading(true)
+  const fetchNews = async () => {
+   setLoading(true);
 
-  let url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
-  console.log(url);
-  let res = await fetch(url);
-  let data = await res.json();
-  setData(data);
+   try {
+    const res = await fetch(url, {
+     signal: controller.signal
+    });
+    const data = await res.json();
 
-  setArticles(data.status !== "error" ? articles.concat(data.articles) : []);
-  setLoading(data.status === "error" && false);
-  setPage(page + 1);
-  setTotalResults(data.totalResults);
-  setTotalPages(Math.ceil(totalResults / props.pageSize));
- };
+    const filteredArticles = data.articles.filter(article => article.title !== "[Removed]");
+    const uniq = [...new Set(filteredArticles)];
+
+    setArticles(articles.concat(uniq));
+    setLoading(false);
+   } catch (err) {
+    console.log(err);
+   }
+  }
+
+  fetchNews();
+
+  return () => {
+   controller.abort();
+   console.log("Unmounted!");
+  }
+ }, [page])
 
  return (
-  <>
-   <h4>Top Headlines</h4>
-   <InfiniteScroll dataLength={articles?.length} next={fetchMoreData} hasMore={articles?.length !== totalResults} loader={loading ? <Spinner /> : <Alert message={data?.message} />}>
-    <div className="container">
-     <div className="row">
-      {articles.length !== 0 && articles.map((value) => {
-       return <div className="col-md-4 my-3" key={value.url}>
-        <NewsItems title={value.title?.slice(0, 45)} description={value.description?.slice(0, 88)} imgUrl={value.urlToImage} newsUrl={value.url} />
-       </div>
-      })}
+  <div className='container mt-4 mb-5'>
+   <h2 className='display-6 my-4'>Top Headlines</h2>
+   <InfiniteScroll
+    dataLength={articles?.length}
+    next={() => setPage(prev => prev + 1)}
+    hasMore={articles?.length !== totalResults}
+    loader={loading && <Spinner />}
+    className="row g-3"
+   >
+    {articles.length !== 0 && articles.map((value) => {
+     return <div className="col-sm-6 col-md-4" key={value.url}>
+      <NewsItems title={value.title?.slice(0, 45)} description={value.description?.slice(0, 88)} imgUrl={value.urlToImage} newsUrl={value.url} />
      </div>
-    </div>
+    })}
    </InfiniteScroll>
-  </>
+  </div>
  )
 }
 
