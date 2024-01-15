@@ -63,38 +63,32 @@ export class News extends Component {
 
  render() {
   return (
-   <>
-    <h4>Top Headlines</h4>
+   <div className='container'>
+    <h4 className='my-5 h2'>Top Headlines</h4>
     <InfiniteScroll
      dataLength={this.state.articles.length}
      next={this.fetchMoreData}
      hasMore={this.state.articles.length !== this.state.totalResults}
      loader={this.state.loading ? <Spinner /> : <Alert message={this.json.message} />}
     >
+     <div className="row g-2">
+      {
+       !!this.state.articles.length &&
 
-     <div className="container">
-
-      <div className="row">
-       {
-        !!this.state.articles.length &&
-        
-        this.state.articles.map((article, i) => (
-         <div className="col-md-4 my-3" key={i}>
-          <NewsItems
-           title={article.title?.slice(0, 45)}
-           description={article.description?.slice(0, 88)}
-           imgUrl={article.urlToImage}
-           newsUrl={article.url}
-          />
-         </div>
-        ))
-       }
-      </div>
-
+       this.state.articles.map((article, i) => (
+        <div className="col" key={i}>
+         <NewsItems
+          title={article.title?.slice(0, 45)}
+          description={article.description?.slice(0, 88)}
+          imgUrl={article.urlToImage}
+          newsUrl={article.url}
+         />
+        </div>
+       ))
+      }
      </div>
-
     </InfiniteScroll>
-   </>
+   </div>
   )
  }
 }
