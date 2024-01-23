@@ -4,31 +4,29 @@ const apiKey = process.env.REACT_APP_NEWS_API_KEY;
 const articlesCache = new Map();
 let totalPages = null;
 
-export const useFetchNews = () => {
+export const useFetchNews = (category) => {
  // store prepared data
  const [articles, setArticles] = useState([]);
  const [page, setPage] = useState(1);
  const [pageSize, setPageSize] = useState(12);
  const [country, setCountry] = useState("us");
- const [category, setCategory] = useState("general");
-
- // filter data
- const updatePageSize = (pageSize) => setPageSize(pageSize);
- const updateCountry = (country) => setCountry(country);
- const updateCategory = (category) => setCategory(category);
 
  // fetch data
  useEffect(() => {
   const controller = new AbortController();
+  const cacheKey = JSON.stringify({ page, category, country });
 
   async function fetchNews() {
    // decide what data to fetch
    const url = `https://newsapi.org/v2/top-headlines?country=${country}&category=${category}&apiKey=${apiKey}&page=${page}&pageSize=${pageSize}`;
 
+   console.log(country);
+
    try {
     // send the cached version if it exists
-    if (articlesCache.has(page)) {
-     setArticles(articlesCache.get(page));
+    if (articlesCache.has(cacheKey)) {
+     console.log("sending from cache");
+     setArticles(articlesCache.get(cacheKey));
      return;
     }
 
@@ -45,17 +43,17 @@ export const useFetchNews = () => {
     // prepare data to send
     const filteredArticles = data.articles.filter(article => article.title !== "[Removed]");
     const uniq = [...new Set(filteredArticles)];
-    articlesCache.set(page, uniq);
+    articlesCache.set(cacheKey, uniq);
     setArticles(uniq);
    } catch (err) {
     console.log(err);
    }
   }
 
-  // fetchNews();
+  fetchNews();
 
   return () => controller.abort();
- }, [page, pageSize, country, category])
+ }, [page, pageSize, country])
 
- return [articles, setPage, totalPages];
+ return [articles, setPage, totalPages, setCountry];
 }

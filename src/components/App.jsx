@@ -18,13 +18,13 @@ function App() {
    <Router>
     <NavBar />
     <Routes>
-     <Route path='/' element={<News />} />
+     <Route path='/' element={<News category="general" key="home" />} />
      {
       categories.map(category => (
        <Route
         path={`/${category}`}
         key={category}
-        element={<News />}
+        element={<News category={category} key={category} />}
        />))
      }
     </Routes>
