@@ -1,6 +1,6 @@
 import React, { useEffect, useReducer, useState } from 'react'
 import NewsItems from './NewsItems'
-import { useFetchNews } from "../lib/useFetchNews";
+import { useFetchNews } from "../hooks/useFetchNews";
 import Filter from "./Filter";
 
 function News({ category }) {
