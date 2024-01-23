@@ -1,86 +1,80 @@
-import React, { Component } from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from "prop-types"
 import NewsItems from './NewsItems'
 import Spinner from './Spinner'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
-export class News extends Component {
- static defaultProps = {
-  pageSize: 9,
-  country: "in",
-  category: "general",
- }
+News.defaultProps = {
+ pageSize: 9,
+ country: "us",
+ category: "general",
+}
 
- static propTypes = {
-  pageSize: PropTypes.number,
-  country: PropTypes.string,
-  category: PropTypes.string,
- }
+News.propTypes = {
+ pageSize: PropTypes.number,
+ country: PropTypes.string,
+ category: PropTypes.string,
+}
 
- constructor() { // (1) just to indicate that receiving props in state is possible || (2) constructor(props) with super(props) is also possible - then you can use this.props inside the constructor
-  super();
-  this.state = {
-   articles: [],
-   loading: false,
-   page: 1,
-   // pageSize: pageSize, (1)
-   // pageSize: pageSize, (2)
-   totalPages: null,
+function News(props) {
+ const [articles, setArticles] = useState([]);
+ const [loading, setLoading] = useState(true);
+ const [page, setPage] = useState(1);
+ const [totalResults, setTotalResults] = useState(null);
+
+ console.log(page);
+
+ const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
+ console.log(url);
+
+ useEffect(() => {
+  const controller = new AbortController();
+
+  const fetchNews = async () => {
+   setLoading(true);
+
+   try {
+    const res = await fetch(url, {
+     signal: controller.signal
+    });
+    const data = await res.json();
+
+    const filteredArticles = data.articles.filter(article => article.title !== "[Removed]");
+    const uniq = [...new Set(filteredArticles)];
+
+    setArticles(articles.concat(uniq));
+    setLoading(false);
+   } catch (err) {
+    console.log(err);
+   }
   }
- }
 
- async componentDidMount() {
-  this.fetchArticles(this.state.page);
- }
+  fetchNews();
 
- // MY FUNCTIONS
+  return () => {
+   controller.abort();
+   console.log("Unmounted!");
+  }
+ }, [page])
 
- async fetchArticles(pg) {
-  let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=b1b2cd43f3fd4a2a83db63b8d14d70bb&page=${pg}&pageSize=${this.props.pageSize}`; // (1) this.state.pageSize also possible
-  this.setState({ loading: true });
-  let data = await fetch(url);
-  let json = await data.json();
-
-  // console.log(json);
-
-  this.setState({
-   articles: json.articles,
-   totalResults: json.totalResults,
-   totalPages: Math.ceil(this.state.totalResults / this.state.pageSize),
-   loading: false,
-  });
- }
-
- handlePrev(event) {
-  this.fetchArticles(--this.state.page);
-  if (!(this.state.page === this.state.totalPages)) event.target.nextElementSibling.removeAttribute("disabled")
- }
-
- handleNext(event) {
-  this.fetchArticles(++this.state.page);
-  if (this.state.page === this.state.totalPages) event.target.setAttribute("disabled", "");
- }
-
- // RENDER
-
- render() {
-  return (
-   <div className='container'>
-    {this.state.loading && <Spinner />}
-    <h4>Top Headlines</h4>
-    <div className="row">
-     {!this.state.loading && this.state.articles.map((value) => {
-      return <div className="col-md-4 my-3" key={value.url}>
-       <NewsItems title={value.title?.slice(0, 45)} description={value.description?.slice(0, 88)} imgUrl={value.urlToImage} newsUrl={value.url} />
-      </div>
-     })}
-    </div>
-    <div className='container d-flex justify-content-between'>
-     <button href="/" disabled={this.state.page === 1} className="btn btn-success" onClick={(event) => this.handlePrev.call(this, event)}>&larr; Previous</button>
-     <button href="/" className="btn btn-success" onClick={(event) => this.handleNext.call(this, event)}>Next &rarr;</button>
-    </div>
-   </div>
-  )
- }
+ return (
+  <div className='container mt-4 mb-5'>
+   <h2 className='display-6 my-4'>Top Headlines</h2>
+   <InfiniteScroll
+    dataLength={articles?.length}
+    next={() => setPage(prev => prev + 1)}
+    hasMore={articles?.length !== totalResults}
+    loader={loading && <Spinner />}
+    className="row g-3"
+   >
+    {articles.length !== 0 && articles.map((value) => {
+     return <div className="col-sm-6 col-md-4" key={value.url}>
+      <NewsItems title={value.title?.slice(0, 45)} description={value.description?.slice(0, 88)} imgUrl={value.urlToImage} newsUrl={value.url} />
+     </div>
+    })}
+   </InfiniteScroll>
+  </div>
+ )
 }
 
 export default News
