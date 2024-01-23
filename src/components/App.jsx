@@ -3,8 +3,6 @@ import NavBar from './NavBar';
 import News from './News';
 
 function App() {
- const apiKey = process.env.REACT_APP_NEWS_API_KEY;
-
  const categories = [
   "business",
   "entertainment",
@@ -20,13 +18,13 @@ function App() {
    <Router>
     <NavBar />
     <Routes>
-     <Route path='/' element={<News apiKey={apiKey} key="home" />} />
+     <Route path='/' element={<News />} />
      {
       categories.map(category => (
        <Route
         path={`/${category}`}
         key={category}
-        element={<News apiKey={apiKey} category={category} key={category} />}
+        element={<News />}
        />))
      }
     </Routes>
