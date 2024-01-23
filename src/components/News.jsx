@@ -2,14 +2,11 @@ import React, { Component } from 'react'
 import PropTypes from "prop-types"
 import NewsItems from './NewsItems'
 import Spinner from './Spinner'
-import Alert from './Alert'
-import InfiniteScroll from 'react-infinite-scroll-component'
 
 export class News extends Component {
-
  static defaultProps = {
   pageSize: 9,
-  country: "us",
+  country: "in",
   category: "general",
  }
 
@@ -19,75 +16,68 @@ export class News extends Component {
   category: PropTypes.string,
  }
 
- // 
-
- json = null;
-
- constructor() {
+ constructor() { // (1) just to indicate that receiving props in state is possible || (2) constructor(props) with super(props) is also possible - then you can use this.props inside the constructor
   super();
   this.state = {
    articles: [],
-   loading: true,
-   totalResults: null,
+   loading: false,
+   page: 1,
+   // pageSize: pageSize, (1)
+   // pageSize: pageSize, (2)
+   totalPages: null,
   }
  }
 
  async componentDidMount() {
-  this.fetchMoreData();
+  this.fetchArticles(this.state.page);
  }
 
  // MY FUNCTIONS
 
- fetchMoreData = async () => {
-  this.setState({ loading: true, })
-
-  let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apiKey}&page=${this.state.page++}&pageSize=${this.props.pageSize}`;
-
-  console.log(url);
-
+ async fetchArticles(pg) {
+  let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=b1b2cd43f3fd4a2a83db63b8d14d70bb&page=${pg}&pageSize=${this.props.pageSize}`; // (1) this.state.pageSize also possible
+  this.setState({ loading: true });
   let data = await fetch(url);
-  this.json = await data.json();
+  let json = await data.json();
 
-  if (this.json.status === "error") {
-   this.setState({ loading: false })
-   return;
-  }
+  // console.log(json);
 
   this.setState({
-   articles: this.state.articles.concat(this.json.articles),
-   totalResults: this.json.totalResults,
+   articles: json.articles,
+   totalResults: json.totalResults,
+   totalPages: Math.ceil(this.state.totalResults / this.state.pageSize),
+   loading: false,
   });
- };
+ }
+
+ handlePrev(event) {
+  this.fetchArticles(--this.state.page);
+  if (!(this.state.page === this.state.totalPages)) event.target.nextElementSibling.removeAttribute("disabled")
+ }
+
+ handleNext(event) {
+  this.fetchArticles(++this.state.page);
+  if (this.state.page === this.state.totalPages) event.target.setAttribute("disabled", "");
+ }
 
  // RENDER
 
  render() {
   return (
    <div className='container'>
-    <h4 className='my-5 h2'>Top Headlines</h4>
-    <InfiniteScroll
-     dataLength={this.state.articles.length}
-     next={this.fetchMoreData}
-     hasMore={this.state.articles.length !== this.state.totalResults}
-     loader={this.state.loading ? <Spinner /> : <Alert message={this.json.message} />}
-    >
-     <div className="row g-2">
-      {
-       !!this.state.articles.length &&
-
-       this.state.articles.map((article, i) => (
-        <div className="col" key={i}>
-         <NewsItems
-          title={article.title?.slice(0, 45)}
-          description={article.description?.slice(0, 88)}
-          imgUrl={article.urlToImage}
-          newsUrl={article.url}
-         />
-        </div>
-       ))
-      }
-     </div>
-    </InfiniteScroll>
+    {this.state.loading && <Spinner />}
+    <h4>Top Headlines</h4>
+    <div className="row">
+     {!this.state.loading && this.state.articles.map((value) => {
+      return <div className="col-md-4 my-3" key={value.url}>
+       <NewsItems title={value.title?.slice(0, 45)} description={value.description?.slice(0, 88)} imgUrl={value.urlToImage} newsUrl={value.url} />
+      </div>
+     })}
+    </div>
+    <div className='container d-flex justify-content-between'>
+     <button href="/" disabled={this.state.page === 1} className="btn btn-success" onClick={(event) => this.handlePrev.call(this, event)}>&larr; Previous</button>
+     <button href="/" className="btn btn-success" onClick={(event) => this.handleNext.call(this, event)}>Next &rarr;</button>
+    </div>
    </div>
   )
  }
