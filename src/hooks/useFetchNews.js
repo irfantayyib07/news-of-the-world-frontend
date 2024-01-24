@@ -12,7 +12,7 @@ export const useFetchNews = (category) => {
  const [page] = pageState;
 
  // store prepared data
- const [articles, setArticles] = useState([]);
+ const [response, setResponse] = useState([]);
  const [loading, setLoading] = useState();
 
  // fetch data
@@ -30,7 +30,7 @@ export const useFetchNews = (category) => {
     // send the cached version if it exists
     if (articlesCache.has(cacheKey)) {
      console.log("sending from cache");
-     setArticles(articlesCache.get(cacheKey));
+     setResponse(articlesCache.get(cacheKey));
      return;
     }
 
@@ -39,7 +39,13 @@ export const useFetchNews = (category) => {
     setLoading(true);
     const res = await fetch(url, { signal: controller.signal });
     const data = await res.json();
-    if (!data) return;
+
+    // if we do not have any articles, exit the function and send whatever we have
+    if (!data.articles) {
+     setLoading(false);
+     setResponse(data);
+     return;
+    };
 
     // collect data information
     totalPages = Math.ceil(data.totalResults / 12);
@@ -48,7 +54,7 @@ export const useFetchNews = (category) => {
     const filteredArticles = data.articles.filter(article => article.title !== "[Removed]");
     const uniq = [...new Set(filteredArticles)];
     articlesCache.set(cacheKey, uniq);
-    setArticles(uniq);
+    setResponse(uniq);
     setLoading(false);
    } catch (err) {
     console.log(err);
@@ -60,5 +66,5 @@ export const useFetchNews = (category) => {
   return () => controller.abort();
  }, [page, country])
 
- return { articles, loading, totalPages };
+ return { response, loading, totalPages };
 }

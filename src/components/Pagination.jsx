@@ -1,38 +1,32 @@
 import { useEffect, useRef } from "react";
 import { useFilter } from "../contexts/filterContext";
 
-let isFirstPage = true;
-
-function Pagination({ totalPages }) {
+function Pagination({ totalPages, loading }) {
  const { pageState } = useFilter();
  const [page, setPage] = pageState;
 
  const prevButton = useRef();
  const nextButton = useRef();
 
- if (page === 1) isFirstPage = true;
- const isLastPage = page === totalPages;
-
- console.log(page, "of", totalPages, isLastPage);
-
  useEffect(() => {
-  if (isFirstPage) {
+  if (loading) {
    prevButton.current.setAttribute("disabled", "");
-  } else if (isLastPage) {
    nextButton.current.setAttribute("disabled", "");
-  } else if (!isLastPage) {
-   prevButton.current.removeAttribute("disabled");
-  }
- }, [page])
+   return;
+  };
+
+  console.log("Loading stopped");
+
+  if (page > 1) prevButton.current.removeAttribute("disabled");
+  if (page < totalPages) nextButton.current.removeAttribute("disabled");
+ }, [loading])
 
  const handleNext = () => {
   setPage(prev => ++prev);
-  isFirstPage = false;
  }
 
  const handlePrev = () => {
   setPage(prev => --prev);
-  nextButton.current.removeAttribute("disabled");
  }
 
  return (
