@@ -8,9 +8,11 @@ export function useFilter() {
 
 function FilterProvider({ children }) {
  const countryState = useState("us");
+ const pageState = useState(1);
 
  const filterData = {
-  countryState
+  countryState,
+  pageState
  }
 
  return (

@@ -6,12 +6,14 @@ const articlesCache = new Map();
 let totalPages = null;
 
 export const useFetchNews = (category) => {
+ // filter information
+ const { countryState, pageState } = useFilter();
+ const [country] = countryState;
+ const [page] = pageState;
+
  // store prepared data
  const [articles, setArticles] = useState([]);
- const [page, setPage] = useState(1);
  const [loading, setLoading] = useState();
- const { countryState } = useFilter();
- const [country] = countryState;
 
  // fetch data
  useEffect(() => {
@@ -21,6 +23,8 @@ export const useFetchNews = (category) => {
   async function fetchNews() {
    // decide what data to fetch
    const url = `https://newsapi.org/v2/top-headlines?country=${country}&category=${category}&apiKey=${apiKey}&page=${page}&pageSize=12`;
+
+   console.log(page);
 
    try {
     // send the cached version if it exists
@@ -56,5 +60,5 @@ export const useFetchNews = (category) => {
   return () => controller.abort();
  }, [page, country])
 
- return [articles, setPage, totalPages, loading];
+ return { articles, loading, totalPages };
 }
