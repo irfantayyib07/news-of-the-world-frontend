@@ -17,9 +17,14 @@ function Pagination({ totalPages, loading }) {
 
   console.log("Loading stopped");
 
+  // enable the buttons
   if (page > 1) prevButton.current.removeAttribute("disabled");
   if (page < totalPages) nextButton.current.removeAttribute("disabled");
- }, [loading])
+
+  // disable the buttons in case of receiving cached data
+  if (page === 1) prevButton.current.setAttribute("disabled", "");
+  if (page === totalPages) nextButton.current.setAttribute("disabled", "");
+ }, [loading, page])
 
  const handleNext = () => {
   setPage(prev => ++prev);
@@ -31,7 +36,7 @@ function Pagination({ totalPages, loading }) {
 
  return (
   <>
-   <div className="d-flex justify-content-center gap-5 mt-4">
+   <div className="pagination position-sticky mt-5 bg-secondary rounded-2 w-75 mx-auto d-flex justify-content-around p-2">
     <button className="btn btn-secondary prev-btn" ref={prevButton} onClick={handlePrev}>Previous</button>
     <button className="btn btn-secondary next-btn" ref={nextButton} onClick={handleNext}>Next</button>
    </div>

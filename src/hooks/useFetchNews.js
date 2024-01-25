@@ -24,8 +24,6 @@ export const useFetchNews = (category) => {
    // decide what data to fetch
    const url = `https://newsapi.org/v2/top-headlines?country=${country}&category=${category}&apiKey=${apiKey}&page=${page}&pageSize=12`;
 
-   console.log(page);
-
    try {
     // send the cached version if it exists
     if (articlesCache.has(cacheKey)) {
