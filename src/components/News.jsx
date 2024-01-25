@@ -24,7 +24,7 @@ function News({ category }) {
     <div className="row g-3 mt-4">
      {response.map((value) => {
       return <div className="col-sm-6 col-md-4" key={value.url}>
-       <NewsItems title={value.title?.slice(0, 45)} description={value.description?.slice(0, 88)} imgUrl={value.urlToImage} newsUrl={value.url} />
+       <NewsItems title={value.title} description={value.description} imgUrl={value.urlToImage} newsUrl={value.url} />
       </div>
      })}
     </div>}
