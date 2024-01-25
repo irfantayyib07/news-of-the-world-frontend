@@ -14,10 +14,10 @@ function News({ category }) {
  return (
   <div className='container mt-4 position-relative'>
    <h2 className='display-6 my-4'>Top Headlines</h2>
-   <div className="d-flex flex-wrap gap-3">
+   <div className="d-flex flex-wrap gap-3 align-items-center">
     <Filter />
-    <p className="m-0 p-2 bg-body-tertiary border border-secondary rounded-2">Category: {capitalizeFirstLetter(category)}</p>
-    <p className="m-0 p-2 bg-body-tertiary border border-secondary rounded-2">{response.length} results found</p>
+    <p className="m-0 p-2 bg-body-tertiary border border-secondary rounded-2 user-select-none">Category: {capitalizeFirstLetter(category)}</p>
+    <p className="m-0 p-2 bg-body-tertiary border border-secondary rounded-2 user-select-none">{response.length} results found</p>
    </div>
 
    {loading ? <Spinner /> :
