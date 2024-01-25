@@ -22,3 +22,15 @@ code {
 .pagination {
  bottom: 15px;
 }
+
+.page-dropdown-menu {
+ min-width: unset !important;
+}
+
+.dropdown-toggle::after {
+ all: unset !important;
+}
+
+.loader {
+ width: 50px;
+}

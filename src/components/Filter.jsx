@@ -13,12 +13,12 @@ function Filter() {
  }
 
  return (
-  <>
+  <div className="m-0 p-2 bg-body-secondary border border-secondary rounded-2 d-flex gap-2">
    <div className={`fi fi-${country}`}></div>
-   <select name="country-select" id="country-select" className="form-select form-select-sm w-25" aria-label="Small select example" onChange={(e) => handleChange(e)} defaultValue={country}>
+   <select name="country-select" id="country-select" className="form-select form-select-sm w-25 flex-grow-1" aria-label="Small select example" onChange={(e) => handleChange(e)} defaultValue={country}>
     {COUNTRIES.map(country => <option value={country.shortName} key={country.shortName}>{country.fullName}</option>)}
    </select>
-  </>
+  </div>
  )
 }
 
