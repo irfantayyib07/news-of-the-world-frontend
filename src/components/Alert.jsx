@@ -2,8 +2,8 @@ import React from 'react';
 
 function Alert({ message }) {
  return (
-  <div className="container mt-4 mb-5">
-   <div className="alert alert-danger" role="alert">
+  <div className="container mt-5">
+   <div className="alert alert-danger mb-0 w-50 mx-auto" role="alert">
     {message}
    </div>
   </div>

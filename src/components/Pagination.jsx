@@ -7,15 +7,17 @@ function Pagination({ totalPages, loading }) {
 
  const prevButton = useRef();
  const nextButton = useRef();
+ const pageButton = useRef();
 
  useEffect(() => {
-  if (loading) {
+  if (loading || !totalPages) {
    prevButton.current.setAttribute("disabled", "");
    nextButton.current.setAttribute("disabled", "");
+   pageButton.current.setAttribute("disabled", "");
    return;
   };
 
-  console.log("Loading stopped");
+  pageButton.current.removeAttribute("disabled");
 
   // enable the buttons
   if (page > 1) prevButton.current.removeAttribute("disabled");
@@ -44,7 +46,7 @@ function Pagination({ totalPages, loading }) {
     <button className="btn btn-secondary prev-btn" ref={prevButton} onClick={handlePrev}>Previous</button>
 
     <div className="dropup-center dropup">
-     <button className="btn btn-secondary dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+     <button className="btn btn-secondary dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false" ref={pageButton}>
       {page} / {totalPages}
      </button>
      <ul className="page-dropdown-menu dropdown-menu">
