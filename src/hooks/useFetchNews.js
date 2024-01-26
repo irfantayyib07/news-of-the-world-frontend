@@ -52,8 +52,8 @@ export const useFetchNews = (category) => {
     if (!data.articles) {
      setLoading(false);
      setPage(1);
-     totalPages = undefined;
      setResponse(data);
+     totalPages = undefined;
      return;
     };
 

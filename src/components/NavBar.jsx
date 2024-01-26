@@ -1,6 +1,14 @@
 import { Link } from 'react-router-dom';
+import { useFilter } from "../contexts/filterContext";
 
 function NavBar() {
+ const { pageState } = useFilter();
+ const [page, setPage] = pageState;
+
+ const handleCategoryChange = () => {
+  setPage(1);
+ }
+
  return (
   <>
    <nav className="navbar navbar-expand-lg bg-secondary navbar-dark">
@@ -11,13 +19,13 @@ function NavBar() {
      </button>
      <div className="collapse navbar-collapse" id="navbarSupportedContent">
       <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-       <li className="nav-item"><Link className="nav-link" to="/general">General</Link></li>
-       <li className="nav-item"><Link className="nav-link" to="/business">Business</Link></li>
-       <li className="nav-item"><Link className="nav-link" to="/entertainment">Entertainment</Link></li>
-       <li className="nav-item"><Link className="nav-link" to="/health">Health</Link></li>
-       <li className="nav-item"><Link className="nav-link" to="/science">Science</Link></li>
-       <li className="nav-item"><Link className="nav-link" to="/sports">Sports</Link></li>
-       <li className="nav-item"><Link className="nav-link" to="/technology">Technology</Link></li>
+       <li className="nav-item"><Link className="nav-link" to="/general" onClick={handleCategoryChange}>General</Link></li>
+       <li className="nav-item"><Link className="nav-link" to="/business" onClick={handleCategoryChange}>Business</Link></li>
+       <li className="nav-item"><Link className="nav-link" to="/entertainment" onClick={handleCategoryChange}>Entertainment</Link></li>
+       <li className="nav-item"><Link className="nav-link" to="/health" onClick={handleCategoryChange}>Health</Link></li>
+       <li className="nav-item"><Link className="nav-link" to="/science" onClick={handleCategoryChange}>Science</Link></li>
+       <li className="nav-item"><Link className="nav-link" to="/sports" onClick={handleCategoryChange}>Sports</Link></li>
+       <li className="nav-item"><Link className="nav-link" to="/technology" onClick={handleCategoryChange}>Technology</Link></li>
       </ul>
      </div>
     </div>
