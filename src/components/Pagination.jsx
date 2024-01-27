@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useFilter } from "../contexts/filterContext";
+import { useFilter } from "../hooks/useFilter";
 
 function Pagination({ totalPages, loading }) {
  const { pageState } = useFilter();

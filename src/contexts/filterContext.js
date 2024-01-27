@@ -1,10 +1,6 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useState } from "react";
 
-const FilterContext = createContext();
-
-export function useFilter() {
- return useContext(FilterContext);
-}
+export const FilterContext = createContext();
 
 function FilterProvider({ children }) {
  const countryState = useState("us");

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useFilter } from "../contexts/filterContext";
+import { useFilter } from "../hooks/useFilter";
 
 function NavBar() {
  const { pageState } = useFilter();

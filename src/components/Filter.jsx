@@ -1,4 +1,4 @@
-import { useFilter } from "../contexts/filterContext";
+import { useFilter } from "../hooks/useFilter";
 import { COUNTRIES } from "../constants/countries";
 import "/node_modules/flag-icons/css/flag-icons.min.css";
 

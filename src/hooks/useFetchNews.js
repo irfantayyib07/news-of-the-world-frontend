@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useFilter } from "../contexts/filterContext";
+import { useFilter } from "../hooks/useFilter";
 
 const apiKey = process.env.REACT_APP_NEWS_API_KEY;
 const articlesCache = new Map();
