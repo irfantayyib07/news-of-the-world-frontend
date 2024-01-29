@@ -2,8 +2,7 @@ import { useEffect, useRef } from "react";
 import { useFilter } from "../hooks/useFilter";
 
 function Pagination({ totalPages, loading }) {
- const { pageState } = useFilter();
- const [page, setPage] = pageState;
+ const { pageState: [page, setPage] } = useFilter();
 
  const prevButton = useRef();
  const nextButton = useRef();

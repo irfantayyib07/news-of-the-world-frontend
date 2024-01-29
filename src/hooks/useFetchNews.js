@@ -7,9 +7,7 @@ let totalPages = null;
 
 export const useFetchNews = (category) => {
  // filter information
- const { countryState, pageState } = useFilter();
- const [country] = countryState;
- const [page, setPage] = pageState;
+ const { countryState: [country], pageState: [page, setPage] } = useFilter();
 
  // store prepared data
  const [response, setResponse] = useState([]);

@@ -2,8 +2,7 @@ import { Link } from 'react-router-dom';
 import { useFilter } from "../hooks/useFilter";
 
 function NavBar() {
- const { pageState } = useFilter();
- const [page, setPage] = pageState;
+ const { pageState: [page, setPage] } = useFilter();
 
  const handleCategoryChange = () => {
   setPage(1);

@@ -3,9 +3,7 @@ import { COUNTRIES } from "../constants/countries";
 import "/node_modules/flag-icons/css/flag-icons.min.css";
 
 function Filter() {
- const { countryState, pageState } = useFilter();
- const [country, setCountry] = countryState;
- const [page, setPage] = pageState;
+ const { countryState: [country, setCountry], pageState: [page, setPage] } = useFilter();
 
  const handleChange = (e) => {
   setCountry(e.target.value);
