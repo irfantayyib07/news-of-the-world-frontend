@@ -1,18 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import NavBar from './NavBar';
 import News from './News';
+import { CATEGORIES } from "../constants/categories";
 
 function App() {
- const categories = [
-  "business",
-  "entertainment",
-  "general",
-  "health",
-  "science",
-  "sports",
-  "technology",
- ];
-
  return (
   <>
    <Router>
@@ -20,7 +11,7 @@ function App() {
     <Routes>
      <Route path='/' element={<News category="general" key="home" />} />
      {
-      categories.map(category => (
+      CATEGORIES.map(category => (
        <Route
         path={`/${category}`}
         key={category}
