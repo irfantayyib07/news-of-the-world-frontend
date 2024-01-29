@@ -2,11 +2,15 @@ import NewsItems from './NewsItems'
 import Alert from "./Alert";
 import { useFetchNews } from "../hooks/useFetchNews";
 import Filter from "./Filter";
-import Spinner from "./Spinner";
+import Loader from "./Loader";
 import Pagination from "./Pagination";
 import { capitalizeFirstLetter } from "../lib/utilityFunctions";
+import { useLocation } from "react-router-dom";
 
-function News({ category }) {
+function News() {
+ const { pathname } = useLocation();
+ const category = pathname === "/" ? "general" : pathname.slice(1);
+ console.log(category);
  const { response, loading, totalPages } = useFetchNews(category);
 
  const isError = response.status === "error";
@@ -20,7 +24,7 @@ function News({ category }) {
     <p className="m-0 p-2 bg-body-tertiary border border-secondary rounded-2 user-select-none">{response.length ? response.length : 0} results found</p>
    </div>
 
-   {loading ? <Spinner /> :
+   {loading ? <Loader /> :
     isError ? <Alert message={response.message} /> :
      <div className="row g-3 mt-5">
       {response.map((value) => {

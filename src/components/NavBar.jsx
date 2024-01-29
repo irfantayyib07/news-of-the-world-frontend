@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 function NavBar() {
  const { pageState: [page, setPage] } = useFilter();
- const { pathname } = useLocation();
+const { pathname } = useLocation();
 
  useEffect(() => {
   const navItems = document.querySelectorAll(".nav-item");
@@ -21,7 +21,6 @@ function NavBar() {
   for (let i = 0; i < navItems.length; i++) {
    let generalTab;
    if (navItems[i].firstChild.pathname === "/") generalTab = navItems[i].firstChild;
-   console.log(generalTab);
 
    navItems[i].firstChild.classList.remove("active");
 
