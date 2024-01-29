@@ -1,8 +1,17 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useFilter } from "../hooks/useFilter";
+import { useEffect } from "react";
 
 function NavBar() {
  const { pageState: [page, setPage] } = useFilter();
+ const { pathname } = useLocation();
+
+ useEffect(() => {
+  const navItems = document.querySelectorAll(".nav-item");
+  for (let i = 0; i < navItems.length; i++) {
+   if (navItems[i].firstChild.pathname === pathname) navItems[i].firstChild.classList.add("active");
+  }
+ }, [pathname])
 
  const handleCategoryChange = (e) => {
   setPage(1);
@@ -34,7 +43,7 @@ function NavBar() {
      </button>
      <div className="collapse navbar-collapse" id="navbarSupportedContent">
       <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-       <li className="nav-item"><Link className="nav-link active" to="/" onClick={handleCategoryChange}>General</Link></li>
+       <li className="nav-item"><Link className="nav-link" to="/" onClick={handleCategoryChange}>General</Link></li>
        <li className="nav-item"><Link className="nav-link" to="/business" onClick={handleCategoryChange}>Business</Link></li>
        <li className="nav-item"><Link className="nav-link" to="/entertainment" onClick={handleCategoryChange}>Entertainment</Link></li>
        <li className="nav-item"><Link className="nav-link" to="/health" onClick={handleCategoryChange}>Health</Link></li>
