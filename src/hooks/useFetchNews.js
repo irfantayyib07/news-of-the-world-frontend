@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useFilter } from "../hooks/useFilter";
+import { downloadJSON } from "../lib/downloadJson";
 
 const apiKey = process.env.REACT_APP_NEWS_API_KEY;
 const articlesCache = new Map();
 let totalPages = null;
+const pageSize = 12;
 
 export const useFetchNews = (category) => {
  // filter information
@@ -20,7 +22,7 @@ export const useFetchNews = (category) => {
 
   async function fetchNews() {
    // decide what data to fetch
-   const url = `https://newsapi.org/v2/top-headlines?country=${country}&category=${category}&apiKey=${apiKey}&page=${page}&pageSize=12`;
+   const url = `http://localhost:3500/?country=${country}&category=${category}&page=${page}&pageSize=${pageSize}`;
 
    try {
     // send the cached version if it exists
@@ -46,6 +48,8 @@ export const useFetchNews = (category) => {
     const res = await fetch(url, { signal: controller.signal });
     const data = await res.json();
 
+    downloadJSON(data, `${category}-${country}.txt`, country, category);
+
     // if we do not have any articles, exit the function and send whatever we have
     if (!data.articles) {
      setLoading(false);
@@ -56,7 +60,7 @@ export const useFetchNews = (category) => {
     };
 
     // collect data information
-    totalPages = Math.ceil(data.totalResults / 12);
+    totalPages = Math.ceil(data.totalResults / pageSize);
 
     // prepare cache
     const cacheKey = JSON.stringify({ page, category, country, totalPages });
@@ -75,7 +79,7 @@ export const useFetchNews = (category) => {
   fetchNews();
 
   return () => controller.abort();
- }, [page, country, category])
+ }, [page, country, category]);
 
  return { response, loading, totalPages };
-}
+};
