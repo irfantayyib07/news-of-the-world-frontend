@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { useFilter } from "../hooks/useFilter";
-import { downloadJSON } from "../lib/downloadJson";
 
-const apiKey = process.env.REACT_APP_NEWS_API_KEY;
 const articlesCache = new Map();
 let totalPages = null;
 const pageSize = 12;
@@ -47,8 +45,6 @@ export const useFetchNews = (category) => {
     setLoading(true);
     const res = await fetch(url, { signal: controller.signal });
     const data = await res.json();
-
-    downloadJSON(data, `${category}-${country}.txt`, country, category);
 
     // if we do not have any articles, exit the function and send whatever we have
     if (!data.articles) {
