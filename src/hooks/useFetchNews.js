@@ -20,7 +20,7 @@ export const useFetchNews = (category) => {
 
   async function fetchNews() {
    // decide what data to fetch
-   const url = `http://localhost:3500/?country=${country}&category=${category}&page=${page}&pageSize=${pageSize}`;
+   const url = `https://newsoftheworldbackend.vercel.app/?country=${country}&category=${category}&page=${page}&pageSize=${pageSize}`;
 
    try {
     // send the cached version if it exists
